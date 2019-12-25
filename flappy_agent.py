@@ -18,23 +18,23 @@ def define_vector_model(input_shape, nb_actions):
     model.add(Flatten(input_shape=input_shape))
     model.add(Dense(16))
     model.add(LeakyReLU(0.2))
-    model.add(Dense(8))
+    model.add(Dense(16))
     model.add(LeakyReLU(0.2))
-    model.add(Dense(4))
+    model.add(Dense(8))
     model.add(LeakyReLU(0.2))
     model.add(Dense(nb_actions))
     return model
 
 def define_image_model(input_shape, nb_actions):        
     model = Sequential()
-    model.add(Conv2D(16, (8, 8), strides=(2, 2), input_shape=input_shape, data_format="channels_first"))
+    model.add(Conv2D(8, (8, 8), strides=(2, 2), input_shape=input_shape, data_format="channels_first"))
     model.add(LeakyReLU(0.2))
-    model.add(Conv2D(32, (4, 4), strides=(2, 2), data_format="channels_first"))
+    model.add(Conv2D(16, (4, 4), strides=(2, 2), data_format="channels_first"))
     model.add(LeakyReLU(0.2))
     model.add(Flatten())
-    model.add(Dense(8))
+    model.add(Dense(16))
     model.add(LeakyReLU(0.2))
-    model.add(Dense(4))
+    model.add(Dense(8))
     model.add(LeakyReLU(0.2))
     model.add(Dense(nb_actions))
     return model
@@ -71,7 +71,7 @@ def main():
 
         model = define_image_model((memory_windows_len,) + env.observation_space.shape, nb_actions)
         print(model.summary())
-        learning_rate = 1e-4
+        learning_rate = 1e-3
     else:
         print("Warning the env state is not recognised, please select image or vector")
         return
@@ -80,11 +80,11 @@ def main():
 
 
     # We define the memory for experience replay and the policy for our flappy bird agent
-    memory = SequentialMemory(limit=25000, window_length=memory_windows_len)
-    policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=.75, value_min=.05, value_test=.00, nb_steps=1000)
+    memory = SequentialMemory(limit=20000, window_length=memory_windows_len)
+    policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=.05, value_min=.001, value_test=.00, nb_steps=25000)
 
     # We compile our agent
-    agent = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=200, target_model_update=0.01, policy=policy, train_interval=2)
+    agent = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=200, target_model_update=0.1, policy=policy, train_interval=1)
     agent.compile(Adam(lr=learning_rate), metrics=['mae'])
 
     # If required, we restore the weights
@@ -94,7 +94,7 @@ def main():
     # Now it's time to learn something!
     # We can always safely abort the training prematurely using Ctrl + C
     try:
-        agent.fit(env_train, nb_steps=50000, visualize=False, verbose=2)
+        agent.fit(env_train, nb_steps=25000, visualize=False, verbose=2)
     except:
         pass
 

@@ -100,10 +100,10 @@ class FlappyEnv(gym.Env):
         action = self.game_instance.getActionSet()[action]
 
         # We take the action and get the reward from the environement
-        reward = self.game_instance.act(action)# * 50
+        reward = self.game_instance.act(action) * 10
 
         # If we just flapped, we stay still for the next frame
-        if anti_cheese: reward += self.game_instance.act(None)# * 50
+        if anti_cheese: reward += self.game_instance.act(None) * 10
 
         # If the bird touches anything, the game is over
         if self.game_instance.game_over():
