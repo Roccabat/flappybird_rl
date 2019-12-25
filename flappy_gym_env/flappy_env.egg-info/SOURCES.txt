@@ -1,0 +1,6 @@
+setup.py
+flappy_env.egg-info/PKG-INFO
+flappy_env.egg-info/SOURCES.txt
+flappy_env.egg-info/dependency_links.txt
+flappy_env.egg-info/requires.txt
+flappy_env.egg-info/top_level.txt
