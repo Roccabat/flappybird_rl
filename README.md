@@ -5,7 +5,7 @@
 This repository provides the python code for the training of a basic Reinforcement Learning agent to play the Flappy Bird game.
 More details about this project can be found in the related Medium blog post: [comming soon].
 
-![](maths.gif)
+![](flappybird_rl.gif)
 
 A Reinforcement Learning project requires two main pieces: an environement and an agent. In our case the environement is the Flappy Bird game and we will train an agent to play this game. Thus, this repository contains:
 - code and explanations to wrap a given environement (here from PyGame Learning Environment) to turn it into an OpenAI Gym environement and to make it easily compatible with a keras-rl agent
@@ -18,7 +18,7 @@ A Reinforcement Learning project requires two main pieces: an environement and a
 
 In order to set up the environment, you will need PyGame Learning Environment (PLE), python-opengl, xvfb, ffmpeg and different python libraries (Gym, pygame) to be installed. All the requiered installations are specified in the Dockerfile.
 
-The Flappy Bird environement can be found in the PyGame Learning Environment (PLE) library. In order to be able to use the keras-rl library to define your agent easily, you can first wrap this environement so that to obtain a standard OpenAi Gym environment (see code of flappy_environement.py for details). The wrapper should inherit from the Gym.Env class and must implement at least 5 functions: 
+The Flappy Bird environement can be found in the PyGame Learning Environment (PLE) library. In order to be able to use the keras-rl library to define your agent easily, you can first wrap this environement so that to obtain a standard OpenAi Gym environment (see code of flappy_environement.py for details). The wrapper should inherit from the Gym.Env class and must implement at least 5 functions:
 
 ### __init__(self,...)
 
@@ -88,8 +88,8 @@ In the my_custom_gym_lib folder, the __init__.py should contain the following co
 
 ```python
 from gym.envs.registration import register
-register(id='NAME_OF_YOUR_ENVIRONEMENT', 
-    entry_point='my_custom_gym_lib.envs:NAME_OF_THE_CUSTOM_GYM_CLASS', 
+register(id='NAME_OF_YOUR_ENVIRONEMENT',
+    entry_point='my_custom_gym_lib.envs:NAME_OF_THE_CUSTOM_GYM_CLASS',
 )
 ```
 
@@ -106,7 +106,7 @@ With this architecture, you can install your custom gym by running `pip install 
 
 In order to set up the agent, you will need tensorflow, keras-rl to be installed.
 
-Once the environment has been turned into a Gym environment, you can use keras and keras-rl libraries easily to define and train your agent. In order to set up your agent for its training, you need to create an environement with the gym.make('ENVIRONEMENT_NAME') function. Then if you wish to record the training and testing of the agent, you must wrap your environement with `Monitor(env, "./RECORDING_FOLDER", force=True, video_callable=function)`. Note that video_callable should be a function taking as an argument the `episode_id` and returning true (episode recorded) or false (episode not recorded). It is not recommended to record every episode in the traing session as it will slow the process a lot! 
+Once the environment has been turned into a Gym environment, you can use keras and keras-rl libraries easily to define and train your agent. In order to set up your agent for its training, you need to create an environement with the gym.make('ENVIRONEMENT_NAME') function. Then if you wish to record the training and testing of the agent, you must wrap your environement with `Monitor(env, "./RECORDING_FOLDER", force=True, video_callable=function)`. Note that video_callable should be a function taking as an argument the `episode_id` and returning true (episode recorded) or false (episode not recorded). It is not recommended to record every episode in the traing session as it will slow the process a lot!
 
 Then you must create the "agent brain": a neural network that takes as input the environement state during the last X steps with X the window_length of the Memory that we will describe later. Considering more than only the current state is important for example when working with the image of the screen: in this case, a single frame doesn't allow the agent to know the velocity of an object, just its position. The neural network will of course have a last layer of size env.action_space (see __init__ for more details).
 
