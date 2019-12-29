@@ -5,7 +5,7 @@
 This repository provides the python code for the training of a basic Reinforcement Learning agent to play the Flappy Bird game.
 More details about this project can be found in the related Medium blog post: [comming soon].
 
-![](flappybird_rl.gif)
+![](img/flappybird_rl.gif)
 
 A Reinforcement Learning project requires two main pieces: an environment and an agent. In our case the environment is the Flappy Bird game and we will train an agent to play this game. Thus, this repository contains:
 - code and explanations to wrap a given environment (here from PyGame Learning Environment) to turn it into an OpenAI Gym environment and to make it easily compatible with a keras-rl agent
@@ -127,3 +127,26 @@ Notice that the training of 50000 steps took around 5 minutes. The following res
 | 0 step (0 episode) | 0 | 0 | 0 |
 | 50000 steps (674 episodes) | 0 | 34 | 8.7 |
 | 100000 steps (1171 episodes) | 1 | 85 | 23.4 |
+
+
+### Image mode
+
+Another option is to train the FlappyBird agent with screen images directly (the last 3 frame in our case to be precise).
+
+As working with the raw images would require models with too much parameters, some transformations have to be done on these inputs. Thus, at each time step the observation of the agent consists in the last 3 frames converted in black and white, resized in (36x64) and stacked together:
+
+![](img/flappybird_image_mode.gif)
+
+The three different versions of inputs that can be observed above have been tested for the training of the agent. The first one can't be obtain directly with simple transformations but allows naturally a much faster training. The second and the third ones are obtained with two different resizing mode. We observed that the resizing mode has an impact on the training: the aliasing, more present in the second version, makes training much harder.
+
+Due to the nature of the input, a convolutional neural network (CNN) has be chosen instead of a feed-forward neural network as for the "vector case". More specifically, the model tested has 2 convolutional layers and 2 fully-connected layers for a total of 20698 parameters.
+
+Obviously, the training is much more difficult and much slower than for vector inputs. Just in order to get an idea, the training of 100000 steps took around 30 minutes and here are some results obtained on testing mode, with full exploitation and no exploration (eps=0), and for 10 episodes.
+
+| | Worst score | Best score | Mean score |
+|-|-------------|-------------|-------------|
+| 0 step (0 episode) | 0 | 0 | 0 |
+| 400000 steps (7318 episodes) | 0 | 3 | 0.8 |
+| 800000 steps (12634 episodes) | 0 | 6 | 1.6 |
+
+These are not final results and we still need to train our agent longer.
